@@ -19,6 +19,7 @@ const CreateNew = ({ addAnecdote }) => {
   };
 
   const handleReset = e => {
+    e.preventDefault();
     resetContent();
     resetAuthor();
     resetInfo();
@@ -41,9 +42,7 @@ const CreateNew = ({ addAnecdote }) => {
           <input {...info} />
         </div>
         <button type="submit">create</button>
-        <button type="reset" onClick={handleReset}>
-          reset
-        </button>
+        <button onClick={handleReset}>reset</button>
       </form>
     </div>
   );
