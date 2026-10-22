@@ -13,6 +13,27 @@
       "info": "http://wiki.c2.com/?PrematureOptimization",
       "votes": 0,
       "id": "2"
+    },
+    {
+      "content": "o",
+      "author": "o",
+      "info": "o",
+      "votes": 0,
+      "id": "hXbG8qB5NaE"
+    },
+    {
+      "content": "op",
+      "author": "op",
+      "info": "op",
+      "votes": 0,
+      "id": "d3mhwC-2B6s"
+    },
+    {
+      "content": "opp",
+      "author": "opp",
+      "info": "opp",
+      "votes": 0,
+      "id": "Qp3po6Ucgsw"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
