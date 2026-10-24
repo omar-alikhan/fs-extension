@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import NotFound from "./NotFound";
 import styled from "styled-components";
 
 const Card = styled.div`
@@ -104,6 +105,8 @@ const Blog = ({ blogs, user, handleLike, handleRemove }) => {
         )}
       </Card>
     );
+  } else {
+    return <NotFound></NotFound>;
   }
 };
 

@@ -7,6 +7,7 @@ import BlogList from "../components/BlogList";
 import Blog from "../components/Blog";
 import Notification from "../components/Notification";
 import ErrorBoundary from "../components/ErrorBoundary";
+import NotFound from "../components/NotFound";
 import loginService from "../services/login";
 import blogService from "../services/blog";
 import styled from "styled-components";
@@ -279,6 +280,7 @@ function App() {
             )
           }
         />
+        <Route path="*" element={<NotFound></NotFound>} />
       </Routes>
     </>
   );
