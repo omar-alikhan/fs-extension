@@ -6,6 +6,7 @@ import BlogForm from "../components/BlogForm";
 import BlogList from "../components/BlogList";
 import Blog from "../components/Blog";
 import Notification from "../components/Notification";
+import ErrorBoundary from "../components/ErrorBoundary";
 import loginService from "../services/login";
 import blogService from "../services/blog";
 import styled from "styled-components";
@@ -231,36 +232,48 @@ function App() {
         <Route
           path="/"
           element={
-            <BlogList
-              blogs={blogs}
-              user={user}
-              handleLike={handleLike}
-              handleRemove={handleRemove}
-            />
+            <ErrorBoundary>
+              <BlogList
+                blogs={blogs}
+                user={user}
+                handleLike={handleLike}
+                handleRemove={handleRemove}
+              />
+            </ErrorBoundary>
           }
         />
         <Route
           path="/blogs/:id"
           element={
-            <Blog
-              blogs={blogs}
-              user={user}
-              handleLike={handleLike}
-              handleRemove={handleRemove}
-            />
+            <ErrorBoundary>
+              <Blog
+                blogs={blogs}
+                user={user}
+                handleLike={handleLike}
+                handleRemove={handleRemove}
+              />
+            </ErrorBoundary>
           }
         />
         <Route
           path="/login"
           element={
-            user ? <Navigate to="/" /> : <LoginForm handleLogin={handleLogin} />
+            user ? (
+              <Navigate to="/" />
+            ) : (
+              <ErrorBoundary>
+                <LoginForm handleLogin={handleLogin} />
+              </ErrorBoundary>
+            )
           }
         />
         <Route
           path="/create"
           element={
             user ? (
-              <BlogForm handleCreateBlog={handleCreateBlog} />
+              <ErrorBoundary>
+                <BlogForm handleCreateBlog={handleCreateBlog} />
+              </ErrorBoundary>
             ) : (
               <Navigate to="/" />
             )
