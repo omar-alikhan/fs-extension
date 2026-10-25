@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, Link, Navigate, useNavigate } from "react-router-dom";
+import { useNotificationsActions } from "../store/useBloglistStore";
 import "./App.css";
 import LoginForm from "../components/LoginForm";
 import BlogForm from "../components/BlogForm";
@@ -98,13 +99,12 @@ const Button = styled.button`
 `;
 
 function App() {
+  const navigate = useNavigate();
+  const { displayErrorNotification, displaySuccessNotification } =
+    useNotificationsActions();
   const [user, setUser] = useState(null);
   const [blogs, setBlogs] = useState([]);
-  const [notification, setNotification] = useState({
-    message: null,
-    type: null,
-  });
-  const navigate = useNavigate();
+
   const padding = {
     padding: 5,
   };
@@ -137,10 +137,8 @@ function App() {
       setBlogs(blogs);
       setUser(user);
     } catch (error) {
-      setNotification({ message: error, type: "error" });
-      setTimeout(() => {
-        setNotification({ message: null, type: null });
-      }, 3000);
+      console.log("hello");
+      displayErrorNotification("Incorrect username/password");
     }
 
     navigate("/");
@@ -158,20 +156,10 @@ function App() {
     try {
       const newBlog = await blogService.create(blogPayload);
       setBlogs(existingBlogs => [...existingBlogs, newBlog]);
-      setNotification({
-        message: `a new blog ${title} by ${author} added`,
-        type: "success",
-      });
-      setTimeout(() => {
-        setNotification({ message: null, type: null });
-      }, 3000);
+      displaySuccessNotification(`a new blog ${title} by ${author} added`);
     } catch (error) {
-      console.log("blog failed to add");
       setBlogs(existingBlogs => [...existingBlogs]);
-      setNotification({ message: error, type: "error" });
-      setTimeout(() => {
-        setNotification({ message: null, type: null });
-      }, 3000);
+      displayErrorNotification("Blogs failed to load");
     }
 
     navigate("/");
@@ -199,10 +187,7 @@ function App() {
 
   return (
     <>
-      <Notification
-        message={notification.message}
-        type={notification.type}
-      ></Notification>
+      <Notification></Notification>
       <Menubar>
         <MenubarItem>
           <Link style={padding} to="/">

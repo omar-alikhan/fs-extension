@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useNotifications } from "../store/useBloglistStore";
 
 export const Message = styled.div`
   display: block;
@@ -11,8 +12,9 @@ export const Message = styled.div`
   font-family: "Inter", system-ui, sans-serif;
 `;
 
-const Notification = ({ message, type }) => {
-  if (!message) return null;
+const Notification = () => {
+  const { notification, type } = useNotifications();
+  if (!notification) return null;
 
   const style = {
     color: type === "error" ? "#ff1744" : "#00c853",
@@ -21,7 +23,7 @@ const Notification = ({ message, type }) => {
 
   return (
     <Message className={type} style={style}>
-      {message}
+      {notification}
     </Message>
   );
 };
