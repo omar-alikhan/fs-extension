@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { useBlogs } from "../store/useBloglistStore";
 import NotFound from "./NotFound";
 import styled from "styled-components";
 
@@ -82,7 +83,8 @@ const Loading = styled.div`
   font-weight: 700;
 `;
 
-const Blog = ({ blogs, user, handleLike, handleRemove }) => {
+const Blog = ({ user, handleLike, handleRemove }) => {
+  const blogs = useBlogs();
   if (blogs.length === 0) return <Loading>Loading blog...</Loading>;
 
   const id = useParams().id;

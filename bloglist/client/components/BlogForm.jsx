@@ -1,4 +1,9 @@
 import { useState } from "react";
+import {
+  useBlogsActions,
+  useNotificationsActions,
+} from "../store/useBloglistStore";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Input = styled.input`
@@ -43,18 +48,23 @@ const Button = styled.button`
   }
 `;
 
-const BlogForm = ({ handleCreateBlog }) => {
+const BlogForm = () => {
   const [title, setNewTitle] = useState("");
   const [author, setNewAuthor] = useState("");
   const [url, setNewUrl] = useState("");
+  const { addBlog } = useBlogsActions();
+  const { displaySuccessNotification } = useNotificationsActions();
+  const navigate = useNavigate();
 
-  const createBlog = event => {
+  const createBlog = async event => {
     event.preventDefault();
-    handleCreateBlog(title, author, url);
+    await addBlog({ title, author, url });
+    displaySuccessNotification(`a new blog ${title} by ${author} added`);
 
     setNewTitle("");
     setNewAuthor("");
     setNewUrl("");
+    navigate("/");
   };
 
   return (

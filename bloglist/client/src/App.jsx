@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, Link, Navigate, useNavigate } from "react-router-dom";
-import { useNotificationsActions } from "../store/useBloglistStore";
+import {
+  useBlogs,
+  useNotificationsActions,
+  useBlogsActions,
+} from "../store/useBloglistStore";
 import "./App.css";
 import LoginForm from "../components/LoginForm";
 import BlogForm from "../components/BlogForm";
@@ -103,19 +107,14 @@ function App() {
   const { displayErrorNotification, displaySuccessNotification } =
     useNotificationsActions();
   const [user, setUser] = useState(null);
-  const [blogs, setBlogs] = useState([]);
+  const blogs = useBlogs();
+  const { initialize } = useBlogsActions();
 
   const padding = {
     padding: 5,
   };
 
   useEffect(() => {
-    const fetchBlogs = async () => {
-      const blogs = await blogService.getAll();
-      const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
-      setBlogs(sortedBlogs);
-    };
-
     const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
 
     if (loggedUserJSON) {
@@ -124,20 +123,16 @@ function App() {
       setUser(user);
     }
 
-    fetchBlogs();
+    initialize();
   }, []);
 
   const handleLogin = async ({ username, password }) => {
     try {
       const user = await loginService.login({ username, password });
-      const blogs = await blogService.getAll();
-
       window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
       blogService.setToken(user.token);
-      setBlogs(blogs);
       setUser(user);
     } catch (error) {
-      console.log("hello");
       displayErrorNotification("Incorrect username/password");
     }
 
@@ -147,21 +142,6 @@ function App() {
   const handleLogout = async () => {
     window.localStorage.removeItem("loggedBlogAppUser");
     setUser(null);
-    navigate("/");
-  };
-
-  const handleCreateBlog = async (title, author, url) => {
-    const blogPayload = { title, author, url };
-
-    try {
-      const newBlog = await blogService.create(blogPayload);
-      setBlogs(existingBlogs => [...existingBlogs, newBlog]);
-      displaySuccessNotification(`a new blog ${title} by ${author} added`);
-    } catch (error) {
-      setBlogs(existingBlogs => [...existingBlogs]);
-      displayErrorNotification("Blogs failed to load");
-    }
-
     navigate("/");
   };
 
@@ -258,7 +238,7 @@ function App() {
           element={
             user ? (
               <ErrorBoundary>
-                <BlogForm handleCreateBlog={handleCreateBlog} />
+                <BlogForm />
               </ErrorBoundary>
             ) : (
               <Navigate to="/" />

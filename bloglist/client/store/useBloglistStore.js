@@ -1,7 +1,22 @@
 import { create } from "zustand";
 import { useShallow } from "zustand/react/shallow";
+import blogService from "../services/blog";
 
-const useBloglistStore = create(set => ({}));
+const useBloglistStore = create(set => ({
+  blogs: [],
+  actions: {
+    initialize: async () => {
+      const blogs = await blogService.getAll();
+      const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
+      set(() => ({ blogs: sortedBlogs }));
+    },
+    addBlog: async newBlog => {
+      const createdBlog = await blogService.create(newBlog);
+      set(state => ({ blogs: state.blogs.concat(createdBlog) }));
+    },
+  },
+}));
+
 const useNotificationStore = create((set, get) => {
   let timer;
   return {
@@ -23,6 +38,10 @@ const useNotificationStore = create((set, get) => {
     },
   };
 });
+
+export const useBlogs = () => useBloglistStore(state => state.blogs);
+
+export const useBlogsActions = () => useBloglistStore(state => state.actions);
 
 export const useNotifications = () =>
   useNotificationStore(
