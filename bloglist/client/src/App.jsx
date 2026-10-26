@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Routes, Route, Link, Navigate, useNavigate } from "react-router-dom";
 import {
-  useBlogs,
-  useNotificationsActions,
   useBlogsActions,
+  useUser,
+  useUserActions,
 } from "../store/useBloglistStore";
 import "./App.css";
 import LoginForm from "../components/LoginForm";
@@ -13,7 +13,6 @@ import Blog from "../components/Blog";
 import Notification from "../components/Notification";
 import ErrorBoundary from "../components/ErrorBoundary";
 import NotFound from "../components/NotFound";
-import loginService from "../services/login";
 import blogService from "../services/blog";
 import styled from "styled-components";
 
@@ -104,10 +103,8 @@ const Button = styled.button`
 
 function App() {
   const navigate = useNavigate();
-  const { displayErrorNotification, displaySuccessNotification } =
-    useNotificationsActions();
-  const [user, setUser] = useState(null);
-  const blogs = useBlogs();
+  const user = useUser();
+  const { logout } = useUserActions();
   const { initialize } = useBlogsActions();
 
   const padding = {
@@ -115,42 +112,14 @@ function App() {
   };
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
-
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
+    if (user) {
       blogService.setToken(user.token);
-      setUser(user);
     }
-
     initialize();
   }, []);
 
-  const handleLogin = async ({ username, password }) => {
-    try {
-      const user = await loginService.login({ username, password });
-      window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
-      blogService.setToken(user.token);
-      setUser(user);
-    } catch (error) {
-      displayErrorNotification("Incorrect username/password");
-    }
-
-    navigate("/");
-  };
-
   const handleLogout = async () => {
-    window.localStorage.removeItem("loggedBlogAppUser");
-    setUser(null);
-    navigate("/");
-  };
-
-  const handleRemove = async blog => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-      blogService.remove(blog);
-      setBlogs(blogs.filter(b => b.id !== blog.id));
-    }
-
+    logout();
     navigate("/");
   };
 
@@ -188,7 +157,7 @@ function App() {
           path="/"
           element={
             <ErrorBoundary>
-              <BlogList blogs={blogs} />
+              <BlogList />
             </ErrorBoundary>
           }
         />
@@ -196,7 +165,7 @@ function App() {
           path="/blogs/:id"
           element={
             <ErrorBoundary>
-              <Blog blogs={blogs} user={user} handleRemove={handleRemove} />
+              <Blog />
             </ErrorBoundary>
           }
         />
@@ -207,7 +176,7 @@ function App() {
               <Navigate to="/" />
             ) : (
               <ErrorBoundary>
-                <LoginForm handleLogin={handleLogin} />
+                <LoginForm />
               </ErrorBoundary>
             )
           }

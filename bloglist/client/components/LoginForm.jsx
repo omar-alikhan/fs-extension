@@ -1,5 +1,10 @@
 import { useState } from "react";
 import styled from "styled-components";
+import {
+  useNotificationsActions,
+  useUserActions,
+} from "../store/useBloglistStore";
+import { useNavigate } from "react-router-dom";
 
 const Input = styled.input`
   margin: 0.25em;
@@ -43,13 +48,23 @@ const Button = styled.button`
   }
 `;
 
-const LoginForm = ({ handleLogin }) => {
+const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { login } = useUserActions();
+  const navigate = useNavigate();
+  const { displayErrorNotification } = useNotificationsActions();
 
-  const handleSubmit = event => {
+  const handleSubmit = async event => {
     event.preventDefault();
-    handleLogin({ username, password });
+    try {
+      console.log("going into login...");
+      await login({ username, password });
+      console.log("coming out of login...");
+      navigate("/");
+    } catch (error) {
+      displayErrorNotification("Invalid username/password");
+    }
   };
 
   return (

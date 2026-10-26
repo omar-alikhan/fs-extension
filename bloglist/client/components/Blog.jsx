@@ -1,5 +1,5 @@
-import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { useBlogs, useBlogsActions } from "../store/useBloglistStore";
+import { useNavigate, useParams } from "react-router-dom";
+import { useBlogs, useUser, useBlogsActions } from "../store/useBloglistStore";
 import NotFound from "./NotFound";
 import styled from "styled-components";
 
@@ -83,8 +83,9 @@ const Loading = styled.div`
   font-weight: 700;
 `;
 
-const Blog = ({ user }) => {
+const Blog = () => {
   const blogs = useBlogs();
+  const user = useUser();
   const navigate = useNavigate();
   const { voteBlog, removeBlog } = useBlogsActions();
   if (blogs.length === 0) return <Loading>Loading blog...</Loading>;
