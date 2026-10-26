@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useBlogs } from "../store/useBloglistStore";
+import { useBlogs, useBlogsActions } from "../store/useBloglistStore";
 import NotFound from "./NotFound";
 import styled from "styled-components";
 
@@ -83,8 +83,9 @@ const Loading = styled.div`
   font-weight: 700;
 `;
 
-const Blog = ({ user, handleLike, handleRemove }) => {
+const Blog = ({ user, handleRemove }) => {
   const blogs = useBlogs();
+  const { voteBlog } = useBlogsActions();
   if (blogs.length === 0) return <Loading>Loading blog...</Loading>;
 
   const id = useParams().id;
@@ -99,7 +100,7 @@ const Blog = ({ user, handleLike, handleRemove }) => {
         <UrlLink href={`${blog.url}`}>{blog.url}</UrlLink>
         <Likes>
           likes {blog.likes}
-          {canLike && <Button onClick={() => handleLike(blog)}>like</Button>}
+          {canLike && <Button onClick={() => voteBlog(blog.id)}>like</Button>}
         </Likes>
         <AddedBy>Added by {blog.user.name}</AddedBy>
         {canRemove && (

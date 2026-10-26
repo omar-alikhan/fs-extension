@@ -14,6 +14,14 @@ const useBloglistStore = create(set => ({
       const createdBlog = await blogService.create(newBlog);
       set(state => ({ blogs: state.blogs.concat(createdBlog) }));
     },
+    voteBlog: async blogId => {
+      const updatedBlog = await blogService.vote(blogId);
+      set(state => ({
+        blogs: state.blogs
+          .map(b => (b.id === updatedBlog.id ? updatedBlog : b))
+          .sort((a, b) => b.likes - a.likes),
+      }));
+    },
   },
 }));
 

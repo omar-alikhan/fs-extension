@@ -145,17 +145,6 @@ function App() {
     navigate("/");
   };
 
-  const handleLike = async blog => {
-    const blogPayload = { ...blog, likes: blog.likes + 1 };
-    const updatedBlog = await blogService.update(blogPayload);
-
-    const sortedAndUpdatedBlogs = [...blogs]
-      .map(b => (b.id === blog.id ? updatedBlog : b))
-      .sort((a, b) => b.likes - a.likes);
-
-    setBlogs(sortedAndUpdatedBlogs);
-  };
-
   const handleRemove = async blog => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
       blogService.remove(blog);
@@ -199,12 +188,7 @@ function App() {
           path="/"
           element={
             <ErrorBoundary>
-              <BlogList
-                blogs={blogs}
-                user={user}
-                handleLike={handleLike}
-                handleRemove={handleRemove}
-              />
+              <BlogList blogs={blogs} />
             </ErrorBoundary>
           }
         />
@@ -212,12 +196,7 @@ function App() {
           path="/blogs/:id"
           element={
             <ErrorBoundary>
-              <Blog
-                blogs={blogs}
-                user={user}
-                handleLike={handleLike}
-                handleRemove={handleRemove}
-              />
+              <Blog blogs={blogs} user={user} handleRemove={handleRemove} />
             </ErrorBoundary>
           }
         />

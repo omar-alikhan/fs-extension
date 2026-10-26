@@ -39,4 +39,17 @@ const remove = async blog => {
   return response.data;
 };
 
-export default { setToken, getAll, create, update, remove };
+const vote = async blogId => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const { data: votedBlog } = await axios.post(
+    `${baseUrl}/${blogId}/vote`,
+    {},
+    config,
+  );
+  return votedBlog;
+};
+
+export default { setToken, getAll, create, update, remove, vote };

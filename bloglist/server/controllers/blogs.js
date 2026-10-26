@@ -24,15 +24,36 @@ blogsRouter.post("/", userExtractor, async (request, response) => {
   const user = request.user;
   const blog = new Blog({ ...request.body, user: user._id });
 
-  const savedBlog = await blog.save();
-  user.blogs = user.blogs.concat(savedBlog._id);
+  const updatedBlog = await blog.save();
+  user.blogs = user.blogs.concat(updatedBlog._id);
   await user.save();
 
-  const blogWithUser = await savedBlog.populate("user", {
+  await updatedBlog.populate("user", {
     username: 1,
     name: 1,
   });
-  response.status(201).json(blogWithUser);
+  response.status(201).json(updatedBlog);
+});
+
+blogsRouter.post("/:id/vote", userExtractor, async (request, response) => {
+  if (!request.params.id) {
+    return response.status(400).end();
+  }
+
+  const blog = await Blog.findById(request.params.id);
+
+  if (!blog) return response.status(404).end();
+
+  blog.likes = blog.likes + 1;
+
+  const updatedBlog = await blog.save();
+
+  await updatedBlog.populate("user", {
+    username: 1,
+    name: 1,
+  });
+
+  response.json(updatedBlog);
 });
 
 blogsRouter.delete("/:id", userExtractor, async (request, response) => {
