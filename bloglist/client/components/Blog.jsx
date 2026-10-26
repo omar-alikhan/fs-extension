@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useBlogs, useBlogsActions } from "../store/useBloglistStore";
 import NotFound from "./NotFound";
 import styled from "styled-components";
@@ -83,9 +83,10 @@ const Loading = styled.div`
   font-weight: 700;
 `;
 
-const Blog = ({ user, handleRemove }) => {
+const Blog = ({ user }) => {
   const blogs = useBlogs();
-  const { voteBlog } = useBlogsActions();
+  const navigate = useNavigate();
+  const { voteBlog, removeBlog } = useBlogsActions();
   if (blogs.length === 0) return <Loading>Loading blog...</Loading>;
 
   const id = useParams().id;
@@ -104,7 +105,14 @@ const Blog = ({ user, handleRemove }) => {
         </Likes>
         <AddedBy>Added by {blog.user.name}</AddedBy>
         {canRemove && (
-          <RemoveButton onClick={() => handleRemove(blog)}>remove</RemoveButton>
+          <RemoveButton
+            onClick={() => {
+              removeBlog(blog.id);
+              navigate("/");
+            }}
+          >
+            remove
+          </RemoveButton>
         )}
       </Card>
     );

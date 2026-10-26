@@ -22,6 +22,12 @@ const useBloglistStore = create(set => ({
           .sort((a, b) => b.likes - a.likes),
       }));
     },
+    removeBlog: async blogId => {
+      await blogService.remove(blogId);
+      set(state => ({
+        blogs: state.blogs.filter(b => b.id !== blogId),
+      }));
+    },
   },
 }));
 
