@@ -56,6 +56,22 @@ blogsRouter.post("/:id/vote", userExtractor, async (request, response) => {
   response.json(updatedBlog);
 });
 
+blogsRouter.post("/:id/comments", async (request, response) => {
+  if (!request.params.id) {
+    return response.status(400).end();
+  }
+
+  const blog = await Blog.findById(request.params.id);
+
+  if (!blog) return response.status(404).end();
+
+  blog.comments.push(request.body.comment);
+
+  const updatedBlogWithComment = await blog.save();
+
+  response.json(updatedBlogWithComment);
+});
+
 blogsRouter.delete("/:id", userExtractor, async (request, response) => {
   const user = request.user;
   const blog = await Blog.findById(request.params.id);

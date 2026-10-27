@@ -86,11 +86,11 @@ const Loading = styled.div`
 const Blog = () => {
   const blogs = useBlogs();
   const user = useUser();
+  const id = useParams().id;
   const navigate = useNavigate();
   const { voteBlog, removeBlog } = useBlogsActions();
   if (blogs.length === 0) return <Loading>Loading blog...</Loading>;
 
-  const id = useParams().id;
   const blog = blogs.find(b => b.id === id);
 
   if (blog) {
@@ -99,12 +99,13 @@ const Blog = () => {
     return (
       <Card className="blog">
         <Title>{blog.title}</Title>
+        <p>by {blog.author}</p>
         <UrlLink href={`${blog.url}`}>{blog.url}</UrlLink>
+        <AddedBy>Added by {blog.user.name}</AddedBy>
         <Likes>
           likes {blog.likes}
           {canLike && <Button onClick={() => voteBlog(blog.id)}>like</Button>}
         </Likes>
-        <AddedBy>Added by {blog.user.name}</AddedBy>
         {canRemove && (
           <RemoveButton
             onClick={() => {
@@ -115,6 +116,12 @@ const Blog = () => {
             remove
           </RemoveButton>
         )}
+        <h3>comments</h3>
+        <ul>
+          {blog.comments.map((comment, index) => (
+            <li key={index}>{comment}</li>
+          ))}
+        </ul>
       </Card>
     );
   } else {
