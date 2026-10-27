@@ -10,6 +10,7 @@ import LoginForm from "../components/LoginForm";
 import BlogForm from "../components/BlogForm";
 import BlogList from "../components/BlogList";
 import Blog from "../components/Blog";
+import Users from "../components/Users";
 import Notification from "../components/Notification";
 import ErrorBoundary from "../components/ErrorBoundary";
 import NotFound from "../components/NotFound";
@@ -132,6 +133,11 @@ function App() {
             blogs
           </Link>
         </MenubarItem>
+        <MenubarItem>
+          <Link style={padding} to="/users">
+            users
+          </Link>
+        </MenubarItem>
         {user && (
           <MenubarItem>
             <Link style={padding} to="/create">
@@ -166,6 +172,14 @@ function App() {
           element={
             <ErrorBoundary>
               <Blog />
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <ErrorBoundary>
+              <Users />
             </ErrorBoundary>
           }
         />

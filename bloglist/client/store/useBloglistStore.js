@@ -3,14 +3,17 @@ import { persist } from "zustand/middleware";
 import { useShallow } from "zustand/react/shallow";
 import blogService from "../services/blog";
 import loginService from "../services/login";
+import userService from "../services/user";
 
 const useBloglistStore = create(set => ({
   blogs: [],
+  users: [],
   actions: {
     initialize: async () => {
+      const users = await userService.getAll();
       const blogs = await blogService.getAll();
       const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
-      set(() => ({ blogs: sortedBlogs }));
+      set(() => ({ blogs: sortedBlogs, users: users }));
     },
     addBlog: async newBlog => {
       const createdBlog = await blogService.create(newBlog);
@@ -76,6 +79,7 @@ const useUserStore = create(
 );
 
 export const useBlogs = () => useBloglistStore(state => state.blogs);
+export const useUsers = () => useBloglistStore(state => state.users);
 
 export const useBlogsActions = () => useBloglistStore(state => state.actions);
 
