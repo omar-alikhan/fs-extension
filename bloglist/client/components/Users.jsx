@@ -1,5 +1,6 @@
 import { useUsers } from "../store/useBloglistStore";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export const Table = styled.table`
   width: 100%;
@@ -63,7 +64,6 @@ export const Td = styled.td`
 
 const Users = () => {
   const users = useUsers();
-  console.log(users);
   return (
     <>
       <h1>users</h1>
@@ -78,7 +78,9 @@ const Users = () => {
         <TBody>
           {users.map(u => (
             <Tr key={u.id}>
-              <Td>{u.name}</Td>
+              <Td>
+                <Link to={`/users/${u.id}`}>{u.name}</Link>
+              </Td>
               <Td>{u.username}</Td>
               <Td>{u.blogs.length}</Td>
             </Tr>

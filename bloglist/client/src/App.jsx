@@ -11,6 +11,7 @@ import BlogForm from "../components/BlogForm";
 import BlogList from "../components/BlogList";
 import Blog from "../components/Blog";
 import Users from "../components/Users";
+import User from "../components/User";
 import Notification from "../components/Notification";
 import ErrorBoundary from "../components/ErrorBoundary";
 import NotFound from "../components/NotFound";
@@ -116,7 +117,11 @@ function App() {
     if (user) {
       blogService.setToken(user.token);
     }
-    initialize();
+
+    async function fetchData() {
+      await initialize();
+    }
+    fetchData();
   }, []);
 
   const handleLogout = async () => {
@@ -180,6 +185,14 @@ function App() {
           element={
             <ErrorBoundary>
               <Users />
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path="/users/:id"
+          element={
+            <ErrorBoundary>
+              <User />
             </ErrorBoundary>
           }
         />
