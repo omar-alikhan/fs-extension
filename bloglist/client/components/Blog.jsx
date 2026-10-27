@@ -1,5 +1,11 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useBlogs, useUser, useBlogsActions } from "../store/useBloglistStore";
+import { useState } from "react";
+import {
+  useBlogs,
+  useUser,
+  useBlogsActions,
+  useNotificationsActions,
+} from "../store/useBloglistStore";
 import NotFound from "./NotFound";
 import styled from "styled-components";
 
@@ -87,12 +93,22 @@ const Blog = () => {
   const blogs = useBlogs();
   const user = useUser();
   const id = useParams().id;
+  const { displayErrorNotification } = useNotificationsActions();
   const navigate = useNavigate();
-  const { voteBlog, removeBlog } = useBlogsActions();
+  const [comment, setComment] = useState("");
+  const { voteBlog, removeBlog, addBlogComment } = useBlogsActions();
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    if (comment.trim().length === 0) {
+      displayErrorNotification("Comment can't be empty!");
+    }
+    addBlogComment(id, comment);
+  };
+
   if (blogs.length === 0) return <Loading>Loading blog...</Loading>;
 
   const blog = blogs.find(b => b.id === id);
-
   if (blog) {
     const canRemove = user && user.username === blog.user.username;
     const canLike = !!user;
@@ -117,6 +133,14 @@ const Blog = () => {
           </RemoveButton>
         )}
         <h3>comments</h3>
+        <form onSubmit={handleSubmit}>
+          <input
+            value={comment}
+            onChange={e => setComment(e.target.value)}
+            placeholder="add a comment"
+          />
+          <button>add comment</button>
+        </form>
         <ul>
           {blog.comments.map((comment, index) => (
             <li key={index}>{comment}</li>

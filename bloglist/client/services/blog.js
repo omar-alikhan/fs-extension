@@ -52,4 +52,13 @@ const vote = async blogId => {
   return votedBlog;
 };
 
-export default { setToken, getAll, create, update, remove, vote };
+const comment = async (blogId, comment) => {
+  const { data: updatedBlogWithComment } = await axios.post(
+    `${baseUrl}/${blogId}/comments`,
+    { comment },
+  );
+
+  return updatedBlogWithComment;
+};
+
+export default { setToken, getAll, create, update, remove, vote, comment };

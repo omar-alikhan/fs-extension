@@ -33,6 +33,14 @@ const useBloglistStore = create(set => ({
         blogs: state.blogs.filter(b => b.id !== blogId),
       }));
     },
+    addBlogComment: async (blogId, comment) => {
+      const updatedBlog = await blogService.comment(blogId, comment);
+      set(state => ({
+        blogs: state.blogs
+          .map(b => (b.id === updatedBlog.id ? updatedBlog : b))
+          .sort((a, b) => b.likes - a.likes),
+      }));
+    },
   },
 }));
 

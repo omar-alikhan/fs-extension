@@ -58,9 +58,7 @@ const LoginForm = () => {
   const handleSubmit = async event => {
     event.preventDefault();
     try {
-      console.log("going into login...");
       await login({ username, password });
-      console.log("coming out of login...");
       navigate("/");
     } catch (error) {
       displayErrorNotification("Invalid username/password");
