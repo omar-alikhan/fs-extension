@@ -4,6 +4,7 @@ import { useShallow } from "zustand/react/shallow";
 import blogService from "../services/blog";
 import loginService from "../services/login";
 import userService from "../services/user";
+import { getUser, saveUser, removeUser } from "../services/persistentUser";
 
 const useBloglistStore = create(set => ({
   blogs: [],
@@ -74,9 +75,13 @@ const useUserStore = create(
         login: async credentials => {
           const user = await loginService.login(credentials);
           blogService.setToken(user.token);
+          saveUser(user);
           set({ user });
         },
-        logout: () => set({ user: null }),
+        logout: () => {
+          removeUser();
+          set({ user: null });
+        },
       },
     }),
     {

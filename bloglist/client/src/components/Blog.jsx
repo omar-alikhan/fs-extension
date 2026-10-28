@@ -51,6 +51,7 @@ const Likes = styled.div`
 
 const Button = styled.button`
   padding: 0.5em 1em;
+  margin-left: 0.5em;
   font-size: 1rem;
   font-weight: 700;
   color: #000;
@@ -71,6 +72,22 @@ const Button = styled.button`
   &:active {
     transform: translate(3px, 3px);
     box-shadow: none;
+  }
+`;
+
+const Input = styled.input`
+  margin: 0.25em;
+  width: 300px;
+  padding: 0.5em 0.75em;
+  font-size: 1rem;
+  border: 2px solid #000;
+  border-radius: 4px;
+  box-shadow: 4px 4px 0 #000;
+  outline: none;
+
+  &:focus {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 #000;
   }
 `;
 
@@ -104,6 +121,7 @@ const Blog = () => {
       displayErrorNotification("Comment can't be empty!");
     }
     addBlogComment(id, comment);
+    setComment("");
   };
 
   if (blogs.length === 0) return <Loading>Loading blog...</Loading>;
@@ -134,12 +152,12 @@ const Blog = () => {
         )}
         <h3>comments</h3>
         <form onSubmit={handleSubmit}>
-          <input
+          <Input
             value={comment}
             onChange={e => setComment(e.target.value)}
             placeholder="add a comment"
           />
-          <button>add comment</button>
+          <Button>add comment</Button>
         </form>
         <ul>
           {blog.comments.map((comment, index) => (

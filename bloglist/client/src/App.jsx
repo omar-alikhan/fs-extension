@@ -4,19 +4,20 @@ import {
   useBlogsActions,
   useUser,
   useUserActions,
-} from "../store/useBloglistStore";
+} from "./store/useBloglistStore";
 import "./App.css";
-import LoginForm from "../components/LoginForm";
-import BlogForm from "../components/BlogForm";
-import BlogList from "../components/BlogList";
-import Blog from "../components/Blog";
-import Users from "../components/Users";
-import User from "../components/User";
-import Notification from "../components/Notification";
-import ErrorBoundary from "../components/ErrorBoundary";
-import NotFound from "../components/NotFound";
-import blogService from "../services/blog";
+import LoginForm from "./components/LoginForm";
+import BlogForm from "./components/BlogForm";
+import BlogList from "./components/BlogList";
+import Blog from "./components/Blog";
+import Users from "./components/Users";
+import User from "./components/User";
+import Notification from "./components/Notification";
+import ErrorBoundary from "./components/ErrorBoundary";
+import NotFound from "./components/NotFound";
+import blogService from "./services/blog";
 import styled from "styled-components";
+import { getUser } from "./services/persistentUser";
 
 export const Navigation = styled.nav`
   display: flex;
@@ -62,7 +63,7 @@ const Menubar = styled.nav`
   font-family: "Inter", system-ui, sans-serif;
 `;
 
-const MenubarItem = styled.button`
+const MenubarItem = styled.div`
   padding: 0.375em 0.875em;
   font-size: 0.95rem;
   font-weight: 700;
@@ -105,13 +106,9 @@ const Button = styled.button`
 
 function App() {
   const navigate = useNavigate();
-  const user = useUser();
+  const user = useUser() || getUser();
   const { logout } = useUserActions();
   const { initialize } = useBlogsActions();
-
-  const padding = {
-    padding: 5,
-  };
 
   useEffect(() => {
     if (user) {
@@ -134,31 +131,21 @@ function App() {
       <Notification></Notification>
       <Menubar>
         <MenubarItem>
-          <Link style={padding} to="/">
-            blogs
-          </Link>
+          <Link to="/">blogs</Link>
         </MenubarItem>
         <MenubarItem>
-          <Link style={padding} to="/users">
-            users
-          </Link>
+          <Link to="/users">users</Link>
         </MenubarItem>
         {user && (
           <MenubarItem>
-            <Link style={padding} to="/create">
-              new blog
-            </Link>
+            <Link to="/create">new blog</Link>
           </MenubarItem>
         )}
         {user ? (
-          <Button style={padding} onClick={handleLogout}>
-            logout
-          </Button>
+          <Button onClick={handleLogout}>logout</Button>
         ) : (
           <MenubarItem>
-            <Link style={padding} to="/login">
-              login
-            </Link>
+            <Link to="/login">login</Link>
           </MenubarItem>
         )}
       </Menubar>

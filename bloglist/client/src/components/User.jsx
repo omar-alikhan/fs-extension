@@ -1,7 +1,19 @@
 import { useParams } from "react-router-dom";
 import { useBlogsActions, useUsers } from "../store/useBloglistStore";
 import { useEffect } from "react";
-import blog from "../services/blog";
+import styled from "styled-components";
+
+const Card = styled.div`
+  max-width: 600px;
+  margin: 1rem 0rem;
+  padding: 1.5rem;
+  background-color: #dbeafe;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 4px 4px 0 #000;
+  font-family: "Inter", system-ui, sans-serif;
+  color: #000;
+`;
 
 const User = () => {
   const users = useUsers();
@@ -20,7 +32,7 @@ const User = () => {
     return <p>Loading user...</p>;
   }
   return (
-    <>
+    <Card>
       <h1>{user.name}</h1>
       <p>added blogs</p>
       <ul>
@@ -28,7 +40,7 @@ const User = () => {
           <li key={b.id}>{b.title}</li>
         ))}
       </ul>
-    </>
+    </Card>
   );
 };
 
